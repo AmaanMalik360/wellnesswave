@@ -1,9 +1,13 @@
 import React from 'react'
 
 const StaffSignup = ({ formData, setFormData, handleSubmit }) => {
+
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
+
+  
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
     <div>

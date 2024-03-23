@@ -1,11 +1,11 @@
 import { combineReducers } from "redux";
 import authReducer from "./authReducer";
-// import ticketsReducers from "./ticketReducer";
+import postReducer from "./postReducer";
 // import adminReducer from "./adminReducer";
 
 const rootReducer = combineReducers({
     auth: authReducer,
-    // tickets: ticketsReducers,
+    post: postReducer,
     // admin: adminReducer
 })
 

@@ -2,17 +2,16 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import img1 from "../../../assets/images/Green-removebg-preview.png";
-import axios from "axios";
-import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { serverUrl } from "../../../ServerLink";
-import { showToast } from "../../../components/common/toasts/Toast";
+import { useDispatch } from "react-redux";
+import { signin } from "../../../redux/actions/authActions/authActions";
 
 const Login = () => {
-  const navigate = useNavigate();
+  const dispatch = useDispatch()
+  const move = useNavigate();
+
   const [formData, setFormData] = useState({
-    email: "",
-    password: "",
+    email: "", password: ""
   });
 
   const handleChange = (e) => {
@@ -21,29 +20,8 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    try {
-      const { data } = await axios.post(
-        `${serverUrl}/login`,
-        formData
-      );
-      showToast("Login successful", 'success');
-      setTimeout(() => {
-        navigate("/home");
-      }, 1500);
-      console.log( data);
-      // debugger;
-
-      const { name, email, rollNo, role } = data;
-
-      const userInfo = JSON.stringify(data);
-      localStorage.setItem("user", userInfo);
-
-      // console.log("Login response", { data });
-    } catch (error) {
-      // showToast(error);
-      console.error("Error:", error);
-    }
+    dispatch(signin(formData, move))
+    
   };
   return (
     <main className="w-full flex">
@@ -123,7 +101,6 @@ const Login = () => {
               Log In
             </button>
           </form>
-          <ToastContainer />
         </div>
       </div>
     </main>

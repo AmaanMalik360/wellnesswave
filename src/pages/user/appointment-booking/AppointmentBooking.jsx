@@ -68,20 +68,11 @@ const AppointmentPage = () => {
     <>
     <Navbar/>
     <div className="flex bg-gray-100">
-         <div className="w-36 mx-5 my-8 h-96 bg-indigo-900 border-r rounded-lg border-indigo-300 p-4">
-      <button className="my-1.5 px-6 py-1 text-black bg-indigo-200 font-semibold rounded-lg duration-150 hover:bg-indigo-500 active:bg-indigo-700">
-        <Link to="/home">Home</Link>
-      </button>
-      <button className="my-1.5 px-1.5 py-1 text-black bg-indigo-200 font-semibold rounded-lg duration-150 hover:bg-indigo-500 active:bg-indigo-700">
-        <Link to="/appointment-booking">Appointment</Link>
-      </button>
-      <button className="my-1.5 px-4 py-1 text-black bg-indigo-200 font-semibold rounded-lg duration-150 hover:bg-indigo-500 active:bg-indigo-700">
-        <Link to="/indicators">Indicators</Link>
-      </button>
-      <button className="my-10 px-4 py-1 text-white bg-red-600 font-semibold rounded-lg duration-150 hover:bg-indigo-500 active:bg-indigo-700">
-        <Link to="/">Log Out</Link>
-      </button>
-    </div>
+        
+          <div className="w-36 mx-5 my-8 h-96 p-4">
+ 
+          </div>
+        
       <div className="w-full p-8 bg-white rounded-md shadow-lg">
         <h2 className="text-3xl font-extrabold text-center text-indigo-800 mb-6 w-full">
           Book an Appointment

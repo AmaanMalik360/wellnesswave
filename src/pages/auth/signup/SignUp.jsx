@@ -7,6 +7,7 @@ import { useDispatch } from "react-redux";
 import StudentSignup from "../../../components/signup/student/StudentSignup";
 import FacultySignup from "../../../components/signup/faculty/FacultySignup";
 import StaffSignup from "../../../components/signup/staff/StaffSignup";
+import CounsellorSignup from "../../../components/signup/counsellor/CounsellorSignup";
 
 const SignUp = () => {
   
@@ -48,6 +49,16 @@ const SignUp = () => {
     employeeId: "",
     designation: ""
   });
+  const [counsellorFormData, setCounsellorFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+    contact: 0,
+    role: "counsellor",
+    // staff
+    employeeId: "",
+    designation: ""
+  });
 
   const handleOptionChange = (option) => {
     setSelectedOption(option);
@@ -55,13 +66,21 @@ const SignUp = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const formData = selectedOption === "student" ? studentFormData :
-                    selectedOption === "faculty" ? facultyFormData :
-                    staffFormData;
-
-    console.log("Form Data:",formData)
+    let formData;
+    if (selectedOption === "student") {
+      formData = studentFormData;
+    } else if (selectedOption === "faculty") {
+      formData = facultyFormData;
+    } else if (selectedOption === "staff") {
+      formData = staffFormData;
+    } else if (selectedOption === "counsellor") {
+      formData = counsellorFormData;
+    }
+  
+    console.log("Form Data:", formData);
     signup(formData, move);
   };
+  
 
   return (
     <main className="w-full flex">
@@ -122,6 +141,12 @@ const SignUp = () => {
                 >
                   Staff
                 </NavLink>
+                <NavLink
+                  onClick={() => handleOptionChange("counsellor")}
+                  className="mx-1 px-4 py-1 text-white duration-150 rounded-full bg-indigo-500 active:bg-indigo-700 text-md"
+                >
+                  Counsellor
+                </NavLink>
               </div>
               <p className="text-md">
                 Already have an account? 
@@ -164,6 +189,14 @@ const SignUp = () => {
                 handleSubmit={handleSubmit}
               />
             )}
+            {selectedOption === "counsellor" && (
+              <CounsellorSignup
+                formData={counsellorFormData}
+                setFormData={setCounsellorFormData}
+                handleSubmit={handleSubmit}
+              />
+            )}
+
           </div>
 
         </div>
