@@ -50,6 +50,10 @@ export const signin = (formData, move) => {
         {
           move('/home')
         }
+        if(user.role === 'counsellor')
+        {
+          move('/counsellor-home')
+        }
       } else {
         dispatch({
           type: "LOGIN_FAILURE",

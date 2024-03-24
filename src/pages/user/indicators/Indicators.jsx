@@ -100,7 +100,6 @@ const QuestionnairePage = () => {
 
   return (
     <>
-    <Navbar/>
     <div className="flex">
         <nav>
           <div className="w-36 mx-5 my-8 h-96 p-4">

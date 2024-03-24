@@ -18,7 +18,6 @@ const Navbar = ({ userImage, logoImage }) => {
     setUser(storedUser)
   }, [auth])
   
-
   const signOut = () =>{
     dispatch(signout())
     showToast('Signed out Successfully', "success")
@@ -28,12 +27,9 @@ const Navbar = ({ userImage, logoImage }) => {
   const renderUserLinks = () => {  
     return (
       <>
-        <Link to="/home" className="mx-2 my-1.5 px-1.5 py-1 text-black bg-indigo-200 font-semibold rounded-lg duration-150 hover:bg-indigo-500 active:bg-indigo-700">Home</Link>
-        <Link to="/appointment-booking" className="mx-2 my-1.5 px-1.5 py-1 text-black bg-indigo-200 font-semibold rounded-lg duration-150 hover:bg-indigo-500 active:bg-indigo-700">Appointment</Link>
-        <Link to="/indicators" className="mx-2 my-1.5 px-1.5 py-1 text-black bg-indigo-200 font-semibold rounded-lg duration-150 hover:bg-indigo-500 active:bg-indigo-700">Indicators</Link>
-        <Link onClick={signOut} to="/" className="mx-2 my-1.5">
-          <LogoutIcon className="" />
-        </Link>  
+        <Link to="/home" className="mx-2 my-1.5 px-1.5 py-1 text-white italic font-semibold rounded-lg duration-150 hover:bg-indigo-500 active:bg-indigo-700">Home</Link>
+        <Link to="/appointment-booking" className="mx-2 my-1.5 px-1.5 py-1 text-white italic font-semibold rounded-lg duration-150 hover:bg-indigo-500 active:bg-indigo-700">Appointment</Link>
+        <Link to="/indicators" className="mx-2 my-1.5 px-1.5 py-1 text-white italic font-semibold rounded-lg duration-150 hover:bg-indigo-500 active:bg-indigo-700">Indicators</Link>  
       </>
     );
   };
@@ -41,54 +37,49 @@ const Navbar = ({ userImage, logoImage }) => {
   const renderAdminLinks = () =>{
     return (
       <>
-        <Link to="/users" className="mx-2 my-1.5 px-1.5 py-1 text-black bg-indigo-200 font-semibold rounded-lg duration-150 hover:bg-indigo-500 active:bg-indigo-700">Users</Link>
-        <Link onClick={signOut} to="/" className="mx-2 my-1.5">
-          <LogoutIcon className="" />
-        </Link>  
-      </>
+        <Link to="/users" className="mx-2 my-1.5 px-1.5 py-1 text-white italic bg-indigo-200 font-semibold rounded-lg duration-150 hover:bg-indigo-500 active:bg-indigo-700">Users</Link>  
+    </>
     ) 
   }
 
   const renderCounsellorLinks = () =>{
     return (
       <>
-        <Link to="/counsellor-home" className="mx-2 my-1.5 px-1.5 py-1 text-white rounded-lg hover:bg-indigo-500 active:bg-indigo-700">Home</Link>
-        <Link onClick={signOut} to="/" className="mx-2 my-1.5">
-          <LogoutIcon className="" />
-        </Link>   
+        <Link to="/counsellor-home" className="mx-2 my-1.5 px-1.5 py-1 text-white italic font-semibold rounded-lg hover:bg-indigo-500 active:bg-indigo-700">Home</Link>   
       </> 
     ) 
   }
 
   return (
-    <nav className="bg-indigo-900 p-3 h-24 flex justify-between items-center">
-      <div>
-        <img
-          src={img0}
-          width={50}
-          height={50}
-          alt="Logo"
-          className="ml-5"
-        />
-      </div>
-      <div className="flex mx-5 my-8 p-4">
-        {user && Object.keys(user).length !== 0 && (
-          user.role === 'admin' ? 
-            renderAdminLinks() : 
-            user.role === 'counsellor' ?
-              renderCounsellorLinks() :
-              renderUserLinks()
-        )}
-      </div>
-      <div className="flex items-center">
-        <p className="text-white mr-5 font-style: italic">{user?.name}</p>
-        <img
-          src={img3}
-          alt="User"
-          className="h-8 w-8 mr-5 rounded-full object-cover"
-        />
-      </div>
-    </nav>
+    <>
+      {user && (
+        <nav className="w-full bg-indigo-900 p-3 h-28 flex sticky top-0 justify-between items-center z-50">
+          <div>
+            <img
+              src={img0}
+              width={80}
+              height={60}
+              alt="Logo"
+              className="ml-5"
+            />
+          </div>
+          <div className="flex ml-10 my-8 p-4">
+            {user.role === 'admin' ? 
+              renderAdminLinks() : 
+              user.role === 'counsellor' ?
+                renderCounsellorLinks() :
+                renderUserLinks()
+            }
+          </div>
+          <div className="flex items-center">
+            <p className="text-white mr-5 font-style: italic">{user?.name}</p>
+            <Link onClick={signOut} to="/" className="mx-2 my-1.5">
+              <LogoutIcon className="" />
+            </Link> 
+          </div>
+        </nav>
+      )}
+    </>
   );
 };
 

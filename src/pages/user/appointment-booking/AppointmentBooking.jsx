@@ -66,7 +66,6 @@ const AppointmentPage = () => {
 
   return (
     <>
-    <Navbar/>
     <div className="flex bg-gray-100">
         
           <div className="w-36 mx-5 my-8 h-96 p-4">

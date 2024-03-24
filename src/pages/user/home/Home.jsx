@@ -75,27 +75,23 @@ const Home = () => {
 
   return (
     <>
-      <Navbar />
-      <div className="flex my-5">
-        <nav>
-          <div className="w-36 mx-5 my-8 h-96 p-4">
-          </div>
-        </nav>
+      <div className="ml-52 mb-20">
+        <div className="h-full fixed inline-block border border-black">
+     
+        </div>
+        
         {/* posts */}
-        <div className="flex-col">
-          <h2 className="text-xl">Posts</h2>
-          <div className="">
+        <div className="w-4/5 flex-col inline-block bg-indigo-50 pl-10 pt-10 pb-10">
             {posts?.map((post, i) => (
-              <div className="" key={i}>
-                <h1>{i}</h1>
-                <h3> {post?.heading}</h3>
-                <p>{post?.body}</p>
+              <div className="w-3/5 ml-32 rounded-md border bg-white mb-5 border-black shadow-lg pt-5 pb-5 pr-5" key={i}>
+                <h3 className="ml-5 text-indigo-800 mb-5 font-bold text-2xl underline"> {post?.heading}</h3>
+                <p className="ml-5 amb-10 text-md italic">{post?.body}</p>
               </div>
             ))}
-          </div>
-
         </div>
-
+        <div className="h-full fixed inline-block border border-black">
+  
+        </div>
         {/* <section className="flex flex-col cards">
           <div className="card">
             <section className="mb-6 mx-10 border border-black border-2 rounded-lg pb-4 w-[800px] shadow-2xl">
