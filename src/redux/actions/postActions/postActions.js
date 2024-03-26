@@ -32,3 +32,39 @@ export const fetchAllPosts = (token) =>{
       }
     };
 }
+
+export const createAPost = (data, posts,token) =>{    
+    return async (dispatch) => {
+      try {
+        dispatch({ type: "POSTS_REQUEST" });
+
+        const response = await axios.post(`${serverUrl}/posts`, data,{
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        // console.log("Post",response.data.post);
+
+        if (response.status === 201) {
+          const { post } = response.data;
+          // Dispatch success action if needed
+          let updatedPosts = [...posts, post]
+      
+          dispatch({ type: "POSTS_SUCCESS", payload: updatedPosts });
+          showToast(response.data.message, 'success');
+        } 
+        else {
+          dispatch({
+            type: "POSTS_FAILURE",
+            payload: { error: response.data.message },
+          });
+        }
+      } 
+      catch (error) {
+        console.error("Error fetching Posts:", error);
+        dispatch({
+            type: "POSTS_FAILURE",
+            payload: { error: "Error fetching Posts:" },
+        });
+      }
+    };
+}
+

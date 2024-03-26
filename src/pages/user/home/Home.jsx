@@ -15,44 +15,6 @@ const Home = () => {
   // redux states
   const posts = useSelector(state => state?.post?.posts)
   console.log("These are posts",posts)
-  // const posts = [
-  //   {
-  //       "_id": "65febe3dc12331ae13d90140",
-  //       "heading": "Exercise to reduce stress",
-  //       "body": "You need to to the following exercises.",
-  //       "creator": "65fce4726b3bb37aaafcbc40",
-  //       "createdAt": "2024-03-23T11:34:21.660Z",
-  //       "updatedAt": "2024-03-23T11:34:21.660Z",
-  //       "__v": 0
-  //   },
-  //   {
-  //       "_id": "65ff074b0c3ca0873c964f76",
-  //       "heading": "Exercise to make sure that anxiety is less",
-  //       "body": "You need must follow the same exercise.",
-  //       "creator": "65fce4726b3bb37aaafcbc40",
-  //       "createdAt": "2024-03-23T16:46:03.398Z",
-  //       "updatedAt": "2024-03-23T16:46:03.398Z",
-  //       "__v": 0
-  //   },
-  //   {
-  //       "_id": "65ff07d70c3ca0873c964f78",
-  //       "heading": "Exercise to get your dopamine level under control.",
-  //       "body": "You should read long articles for good amount of time.",
-  //       "creator": "65fce4726b3bb37aaafcbc40",
-  //       "createdAt": "2024-03-23T16:48:23.617Z",
-  //       "updatedAt": "2024-03-23T16:48:23.617Z",
-  //       "__v": 0
-  //   },
-  //   {
-  //       "_id": "65ff08960c3ca0873c964f7d",
-  //       "heading": "Exercise No. 4",
-  //       "body": "This is going to be 4th exerice. You must follow this.",
-  //       "creator": "65fce4726b3bb37aaafcbc40",
-  //       "createdAt": "2024-03-23T16:51:34.946Z",
-  //       "updatedAt": "2024-03-23T16:51:34.946Z",
-  //       "__v": 0
-  //   }
-  // ]
 
   const getPosts = async () => {
     dispatch(fetchAllPosts(token));
@@ -70,8 +32,6 @@ const Home = () => {
     };
     fetchPosts()
   }, [])
-  
-
 
   return (
     <>
