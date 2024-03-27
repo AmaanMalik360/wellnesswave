@@ -10,6 +10,9 @@ import PrivateRoute from "./routes/PrivateRoute";
 import CounsellorHome from "./pages/counsellor/counsellor-home/CounsellorHome";
 import NotFound from "./routes/NotFound";
 import Navbar from "./components/common/navbar/Navbar";
+import ChatsPage from "./pages/user/ChatBox/chatsPage";
+import UserList from "./pages/admin/dashboard/UserList";
+import Permissions from "./routes/Permissions";
 
 function App() {
   return (
@@ -25,7 +28,13 @@ function App() {
           <Route path="/home" element={<Home />} />
           <Route path="/appointment-booking" element={<AppointmentBooking />} />
           <Route path="/indicators" element={<Indicators />} />
+          <Route path="/ChatBox" element={<ChatsPage /> }/>
           <Route path="/counsellor-home" element={<CounsellorHome/>} />
+
+          <Route element={<Permissions perProp={['admin']} />}>
+            <Route path='/userlist' element={<UserList/>}/>
+          </Route>
+
         </Route>
 
         <Route path='*' element={<NotFound/>}/>

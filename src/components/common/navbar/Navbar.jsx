@@ -7,7 +7,7 @@ import { showToast } from "../toasts/Toast";
 import { useDispatch, useSelector } from "react-redux";
 import { signout } from "../../../redux/actions/authActions/authActions";
 
-const Navbar = ({ userImage, logoImage }) => {
+const Navbar = () => {
   
   const dispatch = useDispatch();
   const auth = useSelector(state => state.auth)  
@@ -30,6 +30,7 @@ const Navbar = ({ userImage, logoImage }) => {
         <Link to="/home" className="mx-2 my-1.5 px-1.5 py-1 text-white italic font-semibold rounded-lg duration-150 hover:bg-indigo-500 active:bg-indigo-700">Home</Link>
         <Link to="/appointment-booking" className="mx-2 my-1.5 px-1.5 py-1 text-white italic font-semibold rounded-lg duration-150 hover:bg-indigo-500 active:bg-indigo-700">Appointment</Link>
         <Link to="/indicators" className="mx-2 my-1.5 px-1.5 py-1 text-white italic font-semibold rounded-lg duration-150 hover:bg-indigo-500 active:bg-indigo-700">Indicators</Link>  
+        <Link to="/ChatBox" className="mx-2 my-1.5 px-1.5 py-1 text-white italic font-semibold rounded-lg duration-150 hover:bg-indigo-500 active:bg-indigo-700">Chat Box</Link>
       </>
     );
   };
@@ -45,7 +46,8 @@ const Navbar = ({ userImage, logoImage }) => {
   const renderCounsellorLinks = () =>{
     return (
       <>
-        <Link to="/counsellor-home" className="mx-2 my-1.5 px-1.5 py-1 text-white italic font-semibold rounded-lg hover:bg-indigo-500 active:bg-indigo-700">Home</Link>   
+        <Link to="/counsellor-home" className="mx-2 my-1.5 px-1.5 py-1 text-white italic font-semibold rounded-lg hover:bg-indigo-500 active:bg-indigo-700">Home</Link>  
+        <Link to="/ChatBox" className="mx-2 my-1.5 px-1.5 py-1 text-white italic font-semibold rounded-lg duration-150 hover:bg-indigo-500 active:bg-indigo-700">Chat Box</Link> 
       </> 
     ) 
   }

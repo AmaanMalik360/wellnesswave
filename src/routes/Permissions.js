@@ -12,13 +12,10 @@ const Permissions = ({perProp}) => {
   // Function to check if user has the required permissions
   const hasPermission = () => {
     if (user && token) {
-      const decodedToken = jwtDecode(token);
-      console.log(decodedToken);
-      const userPermissions = decodedToken.permissions || [];
       
-      if(user.isAdmin)
+      if(user.role === 'admin')
       {
-        let adminPermission = ['Admin']
+        let adminPermission = ['admin']
         if(Array.isArray(perProp)) {
 
           if(perProp.some((permission) => adminPermission.includes(permission))) {
@@ -30,24 +27,8 @@ const Permissions = ({perProp}) => {
           return false;
         }
       }
-
-      // console.log("user permissions", userPermissions);
-      // console.log("Per Prop",perProp)
-      // console.log(Array.isArray(perProp));
-
-      if (Array.isArray(perProp)) {
-        // Check if any of the required permissions exist in the user's permissions
-        console.log(perProp.some((permission) => userPermissions.includes(permission)));
-
-        if(perProp.some((permission) => userPermissions.includes(permission))){
-          return true;
-        }
-        else {
-          // Display in case not permission not found.
-          showToast('Access Denied', 'info')
-          return false;
-        }
-      } 
+      showToast('Access Denied.', 'info')
+      return false;
     }
     // User or token is missing, no permissions
     showToast('Access Denied', 'info')
@@ -57,7 +38,7 @@ const Permissions = ({perProp}) => {
   return (
     hasPermission()? <Outlet /> : (
       <Navigate
-        to="/movies"
+        to="/"
         state={{ from: location }}
         replace
       />

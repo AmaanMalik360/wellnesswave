@@ -48,12 +48,25 @@ export const signin = (formData, move) => {
 
         if(user.role === 'student' || user.role === 'staff' || user.role === 'faculty')
         {
+          if(!user.active){
+            showToast("Your account is not active yet.","error")
+            return;
+          }
           move('/home')
         }
         if(user.role === 'counsellor')
         {
+          if(!user.active){
+            showToast("Your account is not active yet.","error")
+            return;
+          }
           move('/counsellor-home')
         }
+        if(user.role === 'admin')
+        {
+          move('userlist')
+        }
+        
       } else {
         dispatch({
           type: "LOGIN_FAILURE",
