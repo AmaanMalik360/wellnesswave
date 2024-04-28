@@ -7,15 +7,14 @@ import AddPostModal from '../../../components/counsellor/modals/AddPostModal';
 
 const CounsellorPosts = () => {
   const dispatch = useDispatch();
+  const posts = useSelector(state => state.post.posts);
   const user = JSON.parse(localStorage.getItem("user")); 
   const token = localStorage.getItem("token"); 
-  const posts = useSelector(state => state.post.posts);
   const [selected, setSelected] = useState('Survey');
 
   const handleSelect = (item) => {
     setSelected(item);
   };
-
 
   // Modal states and functions
   const [showModal, setShowModal] = useState(false)
@@ -31,7 +30,7 @@ const CounsellorPosts = () => {
   }
 
   const getPosts = async () => {
-    dispatch(fetchAllPosts(token));
+    await dispatch(fetchAllPosts(token));
   };
 
   useEffect(() => {

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import Navbar from "../../../components/common/navbar/Navbar";
 import { fetchAllPosts } from "../../../redux/actions/postActions/postActions";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -27,7 +26,7 @@ const Home = () => {
           await getPosts();
         }
       } catch (error) {
-        console.error("Error Fetching Tickets:", error);
+        console.error("Error Fetching Posts:", error);
       }
     };
     fetchPosts()

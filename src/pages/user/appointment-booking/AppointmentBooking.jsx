@@ -1,34 +1,44 @@
-import React, { useState } from "react";
-import Navbar from "../../../components/common/navbar/Navbar";
+import React, { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
-import { Link } from "react-router-dom";
 import "react-datepicker/dist/react-datepicker.css";
-
+import { createAppointment, fetchAllAppointments } from "../../../redux/actions/appointmentActions/appointmentActions";
+import { useDispatch, useSelector } from "react-redux";
 
 const AppointmentPage = () => {
+
+  const dispatch = useDispatch()
+  const user = JSON.parse(localStorage.getItem("user")) 
+  const token = localStorage.getItem("token") 
+
+  // redux states
+  const appointments = useSelector(state => state?.appointments?.appointments)
+  const userAppointments = useSelector(state => state?.appointments?.userAppointments)
+
+  console.log("User Appointments", userAppointments);
   const [selectedDate, setSelectedDate] = useState(null);
-  const [selectedTime, setSelectedTime] = useState("09:00 AM");
+  const [selectedTime, setSelectedTime] = useState("");
   const [bookedAppointments, setBookedAppointments] = useState([]);
 
   const availableTimes = [
-    "09:00 AM",
-    "09:30 AM",
+    "9:00 AM",
+    "9:30 AM",
     "10:00 AM",
     "10:30 AM",
     "11:00 AM",
     "11:30 AM",
     "12:00 PM",
     "12:30 PM",
-    "01:00 PM",
-    "01:30 PM",
-    "02:00 PM",
-    "02:30 PM",
-    "03:00 PM",
-    "03:30 PM",
-    "04:00 PM",
-    "04:30 PM",
+    "1:00 PM",
+    "1:30 PM",
+    "2:00 PM",
+    "2:30 PM",
+    "3:00 PM",
+    "3:30 PM",
+    "4:00 PM",
+    "4:30 PM",
   ];
 
+  // Functions to store date & time
   const handleDateChange = (date) => {
     setSelectedDate(date);
   };
@@ -37,16 +47,32 @@ const AppointmentPage = () => {
     setSelectedTime(e.target.value);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (selectedDate && selectedTime) {
+      const formattedDate = selectedDate.toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      });
+
+      const startTime = new Date(`${formattedDate} ${selectedTime}`);
+      const endTime = new Date(startTime.getTime() + 29 * 62060); // Adding 29 minutes (29 * 60000 milliseconds) to startTime
+
       const newAppointment = {
-        date: selectedDate.toDateString(),
-        time: selectedTime,
+        userId: user._id,
+        date: formattedDate,
+        startTime,
+        endTime,
+        counsellorId: "6603ade6260f94369ef9f927",
       };
-      setBookedAppointments([...bookedAppointments, newAppointment]);
+
+      console.log("Appointment", newAppointment)
+      await dispatch(createAppointment(newAppointment, appointments, token))
+      // setBookedAppointments([...bookedAppointments, newAppointment]);
       setSelectedDate(null);
       setSelectedTime("09:00 AM");
+      await getAppointments()
     }
   };
 
@@ -61,97 +87,143 @@ const AppointmentPage = () => {
 
   const availableSlots = availableTimes.filter(
     (time) =>
-      !bookedAppointments.some((appointment) => appointment.time === time)
+      !bookedAppointments.some((appointment) => appointment.startTime === time)
   );
+
+
+  // Function to make weekends unavailable to select in datepicker
+  const isWeekday = (date) => {
+    const day = date.getDay();
+    // Return true for weekdays (Monday-Friday)
+    return day > 0 && day < 6;
+  };
+  
+  // Functions to format date and times in table
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    date.setDate(date.getDate() - 1)
+    return new Intl.DateTimeFormat('en-US', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+    }).format(date);
+  };
+  
+  const formatTime = (timeString) => {
+    const time = new Date(timeString);
+    time.setHours(time.getHours() - 5)
+    return new Intl.DateTimeFormat('en-US', {
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true,
+    }).format(time);
+  };
+
+  const getAppointments = async () => {
+    dispatch(fetchAllAppointments(token));
+  };
+
+  useEffect(() => {
+    const fetchAppointments = async () => {
+      try {
+        if (user && token) {
+          await getAppointments();
+        }
+      } catch (error) {
+        console.error("Error Fetching Appointments:", error);
+      }
+    };
+    fetchAppointments()
+  }, [])
 
   return (
     <>
-    <div className="flex bg-gray-100">
-        
-          <div className="w-36 mx-5 my-8 h-96 p-4">
- 
-          </div>
-        
-      <div className="w-full p-8 bg-white rounded-md shadow-lg">
-        <h2 className="text-3xl font-extrabold text-center text-indigo-800 mb-6 w-full">
-          Book an Appointment
-        </h2>
-
-        <div className="mb-6">
-          <label className="block text-lg text-indigo-800 font-semibold text-gray-600 mb-2">
-            Select Date:
-          </label>
-          <DatePicker
-            selected={selectedDate}
-            onChange={handleDateChange}
-            dateFormat="MMMM d, yyyy"
-            className="w-full p-3 border rounded-lg border-2 border-gray-600 shadow-xl focus:outline-none focus:ring focus:border-blue-300 hover:border-blue-200"
-            placeholderText="Select a date"
-          />
-        </div>
-
-        <div className="mb-6 ">
-          <label className="block text-lg text-indigo-800 font-semibold text-gray-600 mb-2">
-            Select Time:
-          </label>
-          <select
-            value={selectedTime}
-            onChange={handleTimeChange}
-            placeholder="Select time slot"
-            className="w-32 py-3 relative px-3 m-3 border rounded-lg border-2 border-gray-600 shadow-xl focus:border-blue-300 hover:border-blue-200"
-          >
-            {availableSlots.map((time) => (
-              <option key={time} value={time}>
-                {time}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <button
-          type="submit"
-          onClick={handleSubmit}
-          className="w-32 bg-blue-500 text-white p-3 rounded-full shadow-xl hover:bg-blue-800 focus:outline-none focus:ring focus:border-blue-300"
-        >
-          Book!
-        </button>
-
-        {bookedAppointments.length > 0 ? (
-          <div className="mt-8">
-            <h3 className="text-xl font-bold text-indigo-800 mb-2">
-              Booked Appointments:
-            </h3>
-            <table className="w-full border-collapse border border-gray-800">
-              <thead className="text-white">
-                <tr className="bg-indigo-800">
-                  <th className="border p-2">Date</th>
-                  <th className="border p-2">Time</th>
-                  <th className="border p-2">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {bookedAppointments.map((appointment, index) => (
-                  <tr key={index}>
-                    <td className="border p-2">{appointment.date}</td>
-                    <td className="border p-2">{appointment.time}</td>
-                    <td className="border p-2">
-                      <button
-                        onClick={() => handleCancel(index)}
-                        className="bg-red-500 text-white p-2 rounded-md hover:bg-red-600 focus:outline-none focus:ring focus:border-red-300"
-                      >
-                        Cancel
-                      </button>
-                    </td>
-                  </tr>
+      <div className="h-full flex bg-gray-100">
+        <div className="w-full p-8 bg-white rounded-md">
+          <h2 className="text-3xl font-extrabold text-center text-indigo-800 mb-6">
+            Book an Appointment
+          </h2>
+          <div className="mb-6 flex flex-col md:flex-row">
+            <div className="w-full md:w-1/2 flex">
+              <label className="block text-2xl mt-2 text-indigo-800 font-semibold text-gray-600 ">
+                Select Date:
+              </label>
+              <DatePicker
+                selected={selectedDate}
+                onChange={handleDateChange}
+                minDate={new Date()}
+                filterDate={isWeekday}
+                dateFormat="MMMM d, yyyy"
+                className="w-[200px] h-[51px] p-3 mx-2 border rounded-lg border-2 border-gray-600 shadow-xl focus:outline-none focus:ring focus:border-blue-300 hover:border-blue-200"
+                placeholderText="Select a date"
+              />
+            </div>
+            <div className="w-full md:w-1/2 flex mt-4 md:mt-0">
+              <label className="block text-2xl mt-2 text-indigo-800 font-semibold text-gray-600 mb-0">
+                Select Time:
+              </label>
+              <select
+                value={selectedTime}
+                onChange={handleTimeChange}
+                placeholder="Select time slot"
+                className="w-[200px] h-[51px] p-3 mx-2 relative px-3 border rounded-lg border-2 border-gray-600 shadow-xl focus:border-blue-300 hover:border-blue-200"
+              >
+                {availableTimes.map((slot) => (
+                  <option key={slot} value={slot}>
+                    {slot}
+                  </option>
                 ))}
-              </tbody>
-            </table>
+              </select>
+            </div>
+            <button
+              type="submit"
+              onClick={handleSubmit}
+              className="mt-4 md:mt-0 w-[200px] h-[52px] bg-blue-500 text-white p-1 rounded-md shadow-xl hover:bg-blue-800 focus:outline-none focus:ring focus:border-blue-300"
+            >
+              Book!
+            </button>
           </div>
-        ) : (
-          <p className="mt-8 text-gray-600">No appointments booked yet.</p>
-        )}
+
+          {userAppointments?.length > 0 ? (
+            <div className="mt-8">
+              <h3 className="text-xl font-bold text-indigo-800 mb-2">
+                Booked Appointments:
+              </h3>
+              <table className="w-full border-collapse border border-gray-800">
+                <thead className="text-white">
+                  <tr className="bg-indigo-800">
+                    <th className="border p-2">Date</th>
+                    <th className="border p-2">Starting Time</th>
+                    <th className="border p-2">Ending Time</th>
+                    <th className="border p-2">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {userAppointments
+                  .sort((a, b) => new Date(a.date) - new Date(b.date)) // Sort appointments by date
+                  .map((appointment, index) => (
+                    <tr key={index}>
+                      <td className="border pl-[50px] py-[5px]">{formatDate(appointment.date)}</td>
+                      <td className="border pl-[50px] py-[5px]">{formatTime(appointment.startTime)}</td>
+                      <td className="border pl-[50px] py-[5px]">{formatTime(appointment.endTime)}</td>
+                      <td className="border pl-[50px] py-[5px]">
+                        <button
+                          onClick={() => handleCancel(index)}
+                          className="bg-red-500 text-white p-2 rounded-md hover:bg-red-600 focus:outline-none focus:ring focus:border-red-300"
+                        >
+                          Cancel
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <p className="mt-8 text-gray-600">No appointments booked yet.</p>
+          )}
+        </div>
       </div>
-    </div>
     </>
   );
 };

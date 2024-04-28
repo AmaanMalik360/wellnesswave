@@ -32,7 +32,6 @@ export const changePermission = (token, adminId, userId, users) =>{
     return async (dispatch) => {
         try 
         {
-            dispatch({ type: "USERS_REQUEST" });
             console.log("Admin Id:",adminId)
             // Check if the user is an admin
             let userToUpdate = users.find((obj) => obj.id === userId);
@@ -45,7 +44,7 @@ export const changePermission = (token, adminId, userId, users) =>{
             // Make a request to the backend to update user permission
             
             const response = await axios.post(
-                `${serverUrl}/change-permission`,
+                `${serverUrl}/change-permission/${adminId}`,
                 { userId: userId },
                 {
                 headers: 
@@ -56,29 +55,14 @@ export const changePermission = (token, adminId, userId, users) =>{
                 }
             );
      
-            if (response.status === 200) 
+            console.log("Response Status:",response)
+            if (response.status == 200) 
             {
-                // Now do changes in frontend also to reflect changes.
-                if(userToUpdate.active){
-                    userToUpdate.active = false;
-                }
-                else{
-                    userToUpdate.active = true;
-                }
-
-                let updatedUsers = users.filter((u) => u.id !== userId)
-                updatedUsers = [...updatedUsers, userToUpdate]
-                dispatch({
-                    type: "USERS_SUCCESS", payload: updatedUsers
-                });
                 showToast(response.data.message, 'success');
             } 
             else 
             {
                 showToast(response.data.message, 'error');
-                dispatch({
-                    type: "USERS_FAILURE", payload: { error: response.data.message }
-                });
             }
         } 
         catch (error) 

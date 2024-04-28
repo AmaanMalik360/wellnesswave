@@ -25,15 +25,13 @@ export const signin = (formData, move) => {
     try {
       dispatch({ type: "LOGIN_REQUEST" });
 
-      // Make an HTTP request to your backend
+      // Make an request to your backend
       const response = await axios.post(`${serverUrl}/login`, formData);
-      // ,{
-      //   headers: { Authorization: `Bearer ${token}` },
-      // }
-      console.log(response.status);
-      console.log(response.data);
+
+      // console.log(response.status);
+      console.log(response?.data);
       // Assuming your backend returns a success message on successful signin
-      if (response.status === 200) {
+      if (response?.status == 200) {
         const { user, token } = response.data;
         localStorage.setItem("user", JSON.stringify(user));
         localStorage.setItem("token", token);
@@ -48,39 +46,24 @@ export const signin = (formData, move) => {
 
         if(user.role === 'student' || user.role === 'staff' || user.role === 'faculty')
         {
-          if(!user.active){
-            showToast("Your account is not active yet.","error")
-            return;
-          }
           move('/home')
         }
         if(user.role === 'counsellor')
         {
-          if(!user.active){
-            showToast("Your account is not active yet.","error")
-            return;
-          }
           move('/counsellor-home')
         }
         if(user.role === 'admin')
         {
           move('userlist')
-        }
-        
-      } else {
-        dispatch({
-          type: "LOGIN_FAILURE",
-          payload: { error: response.data.message },
-        });
-        showToast(response.data.message,"error")
-      }
+        }        
+      } 
     } 
     catch (error) {
       dispatch({
         type: "LOGIN_FAILURE",
-        payload: { error: "Error Fetching Movies" },
+        payload: { error: error.response?.data?.message || "Error Logging In" }, // Extract error message from response if available
       });
-      showToast("Error while logging in","error")
+      showToast(error.response?.data?.message || "Error while logging in","error")
     }
   };
 };

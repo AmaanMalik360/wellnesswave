@@ -1,14 +1,12 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import "./UserList.css"
 import { changePermission, fetchUsers } from '../../../redux/actions/adminActions/adminActions';
 
 const UserList = () => {
   const dispatch = useDispatch();
-  const admin = JSON.parse(localStorage.getItem('user'))
-  const token = localStorage.getItem('token')
-  const users = useSelector(state => state.admin.users)
-  console.log("Users", users)
+  const admin = JSON.parse(localStorage.getItem('user'));
+  const token = localStorage.getItem('token');
+  const users = useSelector(state => state.admin.users);
 
   // Fetch All Users.
   const getUsers = async () => {
@@ -21,41 +19,38 @@ const UserList = () => {
       await getUsers();
     }
 
-    getData()
+    getData();
   }, []);
 
   const handlePermissionChange = async (userId) => {
-    console.log(userId)
-    dispatch(changePermission(token, admin._id, userId, users,))
+    await dispatch(changePermission(token, admin._id, userId, users));
+    await getUsers();
   };
 
   return (
-    <div className="dashboard">
-      <div className="UserList">
-        <h2 className="heading">All Users</h2>
-        <table className="table">
+    <div className="p-8">
+      <div className="bg-indigo-900 rounded-lg shadow-lg">
+        <h2 className="text-white text-2xl font-bold px-4 py-2">All Users</h2>
+        <table className="w-full">
           <thead>
             <tr>
-              <th className="th center l">User</th>
-              <th className="th center l">Permissions</th>
+              <th className="border-4 border-indigo-900  text-white bg-indigo-600 rounded-md px-4 py-2">User</th>
+              <th className="border-4 border-indigo-900  text-white bg-indigo-600 rounded-md px-4 py-2">Permissions</th>
             </tr>
           </thead>
           <tbody>
             {users.map((user) => (
               <tr key={user.id}>
-                <td className="td">
-                  <div style={{ cursor: "pointer" }} className="center">
-                    {user.email}
-                  </div>
+                <td className="border-4 border-indigo-900  bg-indigo-600 rounded-md text-white px-4 py-2">
+                  <div className="text-center cursor-pointer">{user.email}</div>
                 </td>
-
-                <td className="td center">
-                  <div>
+                <td className="border-4 border-indigo-900  bg-indigo-600 rounded-md px-4 py-2">
+                  <div className="text-center">
                     <input
-                      style={{ cursor: "pointer" }}
                       type="checkbox"
                       checked={user.active}
                       onChange={() => handlePermissionChange(user._id)}
+                      className="cursor-pointer"
                     />
                   </div>
                 </td>
