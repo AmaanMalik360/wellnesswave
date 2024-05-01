@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { createAppointment, fetchAllAppointments } from "../../../redux/actions/appointmentActions/appointmentActions";
+import { createAppointment, deleteAppointment, fetchAllAppointments } from "../../../redux/actions/appointmentActions/appointmentActions";
 import { useDispatch, useSelector } from "react-redux";
 
 const AppointmentPage = () => {
@@ -18,6 +18,7 @@ const AppointmentPage = () => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedTime, setSelectedTime] = useState("");
   const [bookedAppointments, setBookedAppointments] = useState([]);
+  const [availableSlots, setAvailableSlots] = useState([])
 
   const availableTimes = [
     "9:00 AM",
@@ -76,20 +77,10 @@ const AppointmentPage = () => {
     }
   };
 
-  const handleCancel = (index) => {
-    const updatedAppointments = [...bookedAppointments];
-    const canceledAppointment = updatedAppointments.splice(index, 1)[0];
-    setBookedAppointments(updatedAppointments);
-
-    availableTimes.push(canceledAppointment.time);
-    availableTimes.sort();
+  const handleCancel = async (id) => {
+    await deleteAppointment(id, token)
+    await getAppointments()
   };
-
-  const availableSlots = availableTimes.filter(
-    (time) =>
-      !bookedAppointments.some((appointment) => appointment.startTime === time)
-  );
-
 
   // Function to make weekends unavailable to select in datepicker
   const isWeekday = (date) => {
@@ -99,9 +90,9 @@ const AppointmentPage = () => {
   };
   
   // Functions to format date and times in table
-  const formatDate = (dateString) => {
+  const formatDate = (dateString, deductDays) => {
     const date = new Date(dateString);
-    date.setDate(date.getDate() - 1)
+    date.setDate(date.getDate() - deductDays)
     return new Intl.DateTimeFormat('en-US', {
       day: 'numeric',
       month: 'short',
@@ -118,6 +109,21 @@ const AppointmentPage = () => {
       hour12: true,
     }).format(time);
   };
+
+  useEffect(() => {
+
+    if(selectedDate !== null){
+      const appointmentsOnSelectedDate = userAppointments?.filter((appointment) => formatDate(selectedDate,0) === formatDate(appointment.date,1))
+      console.log(appointmentsOnSelectedDate)
+      const availableSlot = availableTimes?.filter(
+        (time) =>
+          !appointmentsOnSelectedDate?.some((appointment) => (formatTime(appointment.startTime) === time))
+      );
+      setAvailableSlots(availableSlot);
+
+    }
+  }, [selectedDate, userAppointments]);
+  // console.log("Available Slots:", availableSlots)
 
   const getAppointments = async () => {
     dispatch(fetchAllAppointments(token));
@@ -168,7 +174,7 @@ const AppointmentPage = () => {
                 placeholder="Select time slot"
                 className="w-[200px] h-[51px] p-3 mx-2 relative px-3 border rounded-lg border-2 border-gray-600 shadow-xl focus:border-blue-300 hover:border-blue-200"
               >
-                {availableTimes.map((slot) => (
+                {availableSlots?.map((slot) => (
                   <option key={slot} value={slot}>
                     {slot}
                   </option>
@@ -203,12 +209,12 @@ const AppointmentPage = () => {
                   .sort((a, b) => new Date(a.date) - new Date(b.date)) // Sort appointments by date
                   .map((appointment, index) => (
                     <tr key={index}>
-                      <td className="border pl-[50px] py-[5px]">{formatDate(appointment.date)}</td>
+                      <td className="border pl-[50px] py-[5px]">{formatDate(appointment.date, 1)}</td>
                       <td className="border pl-[50px] py-[5px]">{formatTime(appointment.startTime)}</td>
                       <td className="border pl-[50px] py-[5px]">{formatTime(appointment.endTime)}</td>
                       <td className="border pl-[50px] py-[5px]">
                         <button
-                          onClick={() => handleCancel(index)}
+                          onClick={() => handleCancel(appointment._id)}
                           className="bg-red-500 text-white p-2 rounded-md hover:bg-red-600 focus:outline-none focus:ring focus:border-red-300"
                         >
                           Cancel
