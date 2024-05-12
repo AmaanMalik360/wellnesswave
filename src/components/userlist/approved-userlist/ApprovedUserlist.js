@@ -1,0 +1,81 @@
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
+const ApprovedUserlist = ({
+  selectedType,
+  approvedUsers,
+  changePermission
+}) => {
+  const move = useNavigate();
+  const [selectedSubType, setSelectedSubType] = useState("Students");
+
+  const subs = [
+    { type: "Students", users: approvedUsers.filter(user => user.role === "student") },
+    { type: "Faculty", users: approvedUsers.filter(user => user.role === "faculty") },
+    { type: "Staff", users: approvedUsers.filter(user => user.role === "staff") },
+    { type: "Counsellors", users: approvedUsers.filter(user => user.role === "counsellor") },
+  ];
+
+  const handleSubTypeSelect = (subtype) => {
+    setSelectedSubType(subtype);
+  };
+
+  const moveToDetails = (user) => {
+    move("/user-details", { state: { user } });
+  };
+
+  const handleChange = (userId) => {
+    changePermission(userId);
+  };
+
+  return (
+    <>
+      <div className="w-full flex-col bg-gray-100 pl-10 pt-10 pb-10">
+        <div className="flex justify-center mb-3">
+          {subs.map((subtype, index) => (
+            <button
+              key={index}
+              className={`mr-3 px-3 py-1 rounded-md ${
+                selectedSubType === subtype.type
+                  ? "bg-indigo-600 text-white"
+                  : "bg-white border border-gray-300 text-gray-700"
+              }`}
+              onClick={() => handleSubTypeSelect(subtype.type)}
+            >
+              {subtype.type}
+            </button>
+          ))}
+        </div>
+
+        <div className="w-full flex-col inline-block">
+          {subs.find(subtype => subtype.type === selectedSubType)?.users
+            .map((user) => (
+              <div
+                key={user._id}
+                className="flex border-2 text-black rounded-md px-4 py-2"
+              >
+                <div
+                  className="text-center p-1 w-[230px] border cursor-pointer"
+                  onClick={() => moveToDetails(user)}
+                >
+                  {user.email}
+                </div>
+                {selectedType === "Approved" && (
+                  <div className="text-center p-1 basis-20 border">
+                    <input
+                      type="checkbox"
+                      checked={user.active}
+                      onChange={() => handleChange(user._id)}
+                      className="cursor-pointer"
+                    />
+                  </div>
+                )}
+              </div>
+            ))}
+        </div>
+      </div>
+    </>
+  );
+};
+
+export default ApprovedUserlist;

@@ -1,6 +1,7 @@
 const initialState = {
     appointments: [],
     userAppointments: [],
+    counsellorAppointments: [],
     isLoading: false,
     error: null,
   };
@@ -26,6 +27,29 @@ export default (state = initialState, action) =>
         break;
 
         case "APPOINTMENTS_FAILURE":
+        state = {
+            ...state,
+            isLoading: false,
+            error: action.payload.error,
+        };
+        break;
+        
+        case "COUNSELLOR_APPOINTMENTS_REQUEST":
+        state = {
+            ...state,
+            isLoading: true,
+        };
+        break;
+
+        case "COUNSELLOR_APPOINTMENTS_SUCCESS":
+        state = {
+            ...state,
+            counsellorAppointments: action.payload.counsellorAppointments,
+            isLoading: false,
+        };
+        break;
+
+        case "COUNSELLOR_APPOINTMENTS_FAILURE":
         state = {
             ...state,
             isLoading: false,

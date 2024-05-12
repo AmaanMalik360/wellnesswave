@@ -44,6 +44,7 @@ const CounsellorPosts = () => {
 
   return (
     <>
+    <div className= "flex flex-col w-full">
       <div className='flex rounded-md justify-center h-[70px] shadow-md shadow-slate-300'>
         <div className='headings flex w-[50%] '>
           <div className='flex items-center justify-center w-full'>
@@ -72,6 +73,8 @@ const CounsellorPosts = () => {
       </button>
 
       <AddPostModal show={showModal} handleClose={closeModal} handlePost={addPost}/>
+    </div>
+
     </>
   );
 };

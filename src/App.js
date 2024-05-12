@@ -1,4 +1,4 @@
-import { Route, Routes, Link, BrowserRouter } from "react-router-dom";
+import { Route, Routes, BrowserRouter } from "react-router-dom";
 import Login from "./pages/auth/login/Login";
 import SignUp from "./pages/auth/signup/SignUp";
 import Home from "./pages/user/home/Home";
@@ -11,8 +11,11 @@ import CounsellorHome from "./pages/counsellor/counsellor-home/CounsellorHome";
 import NotFound from "./routes/NotFound";
 import Navbar from "./components/common/navbar/Navbar";
 import ChatsPage from "./pages/user/ChatBox/chatsPage";
-import UserList from "./pages/admin/dashboard/UserList";
 import Permissions from "./routes/Permissions";
+import Dashboard from "./pages/admin/dashboard/Dashboard";
+import UserDetails from "./pages/admin/user-details/UserDetails";
+import CounsellorAppointments from "./pages/counsellor/counsellor-appointments/CounsellorAppointments";
+import CounsellorPermission from "./routes/CounsellorPermission";
 
 function App() {
   return (
@@ -29,10 +32,15 @@ function App() {
           <Route path="/appointment-booking" element={<AppointmentBooking />} />
           <Route path="/indicators" element={<Indicators />} />
           <Route path="/ChatBox" element={<ChatsPage /> }/>
-          <Route path="/counsellor-home" element={<CounsellorHome/>} />
+
+          <Route element={<CounsellorPermission perProp={['counsellor']} />}>
+            <Route path="/counsellor-home" element={<CounsellorHome/>} />
+            <Route path='/counsellor-appointments' element={<CounsellorAppointments/>}/>
+          </Route>
 
           <Route element={<Permissions perProp={['admin']} />}>
-            <Route path='/userlist' element={<UserList/>}/>
+            <Route path='/dashboard' element={<Dashboard/>}/>
+            <Route path='/user-details' element={<UserDetails/>}/>
           </Route>
 
         </Route>

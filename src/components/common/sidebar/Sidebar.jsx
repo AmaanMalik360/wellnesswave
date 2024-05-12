@@ -2,8 +2,8 @@ import React from 'react';
 
 const Sidebar = ({ items, selected, onSelect }) => {
   return (
-    <div className="bg-gray-100 w-48 h-full">
-      <div className="flex flex-col bg-gray-100 w-48">
+    <div className="fixed left-0 h-full z-10 bg-gray-100 w-48">
+      <div className="flex flex-col bg-gray-100">
         {items.map((item, index) => (
           <div
             key={index}
@@ -17,5 +17,4 @@ const Sidebar = ({ items, selected, onSelect }) => {
     </div>
   );
 };
-
 export default Sidebar;

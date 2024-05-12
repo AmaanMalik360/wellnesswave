@@ -1,22 +1,21 @@
 import React, { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { createAppointment, deleteAppointment, fetchAllAppointments } from "../../../redux/actions/appointmentActions/appointmentActions";
+import {deleteAppointment, fetchAllAppointments, fetchAllCounsellorAppointments } from "../../../redux/actions/appointmentActions/appointmentActions";
 import { useDispatch, useSelector } from "react-redux";
+import { fetchUsers } from "../../../redux/actions/adminActions/adminActions";
 
-const AppointmentPage = () => {
+const CounsellorAppointments = () => {
 
   const dispatch = useDispatch()
   const user = JSON.parse(localStorage.getItem("user")) 
   const token = localStorage.getItem("token") 
 
   // redux states
-  const appointments = useSelector(state => state?.appointments?.appointments)
-  const userAppointments = useSelector(state => state?.appointments?.userAppointments)
+  const counsellorAppointments = useSelector(state => state?.appointments?.counsellorAppointments)
 
-  console.log("User Appointments", userAppointments);
+  console.log("Counsellor Appointments", counsellorAppointments);
   const [selectedDate, setSelectedDate] = useState(null);
-  const [selectedTime, setSelectedTime] = useState("");
   const [availableSlots, setAvailableSlots] = useState([])
 
   const availableTimes = [
@@ -38,52 +37,12 @@ const AppointmentPage = () => {
     "4:30 PM",
   ];
 
-  const nextWeek = new Date();
-  nextWeek.setDate(nextWeek.getDate() + 7); // Add 7 days to get to next week
-  const fridayIndex = 5; // Friday is the 5th day of the week (0-indexed)
-  const daysUntilFriday = (fridayIndex + 7 - nextWeek.getDay()) % 7; // Calculate days until next Friday
-  const maxDate = new Date(nextWeek.setDate(nextWeek.getDate() + daysUntilFriday));
-
   // Functions to store date & time
   const handleDateChange = (date) => {
     setSelectedDate(date);
   };
-
-  const handleTimeChange = (e) => {
-    setSelectedTime(e.target.value);
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (selectedDate && selectedTime) {
-      const formattedDate = selectedDate.toLocaleDateString("en-US", {
-        month: "short",
-        day: "numeric",
-        year: "numeric",
-      });
-
-      const startTime = new Date(`${formattedDate} ${selectedTime}`);
-      const endTime = new Date(startTime.getTime() + 29 * 62060); // Adding 29 minutes (29 * 60000 milliseconds) to startTime
-
-      const newAppointment = {
-        userId: user._id,
-        date: formattedDate,
-        startTime,
-        endTime,
-        counsellorId: user.counsellorId,
-      };
-
-      console.log("Appointment", newAppointment)
-      await dispatch(createAppointment(newAppointment, appointments, token))
-      // setBookedAppointments([...bookedAppointments, newAppointment]);
-      setSelectedDate(null);
-      setSelectedTime("09:00 AM");
-      await getAppointments()
-    }
-  };
-
   const handleCancel = async (id) => {
-    dispatch(deleteAppointment(id, token, appointments))
+    await deleteAppointment(id, token)
     await getAppointments()
   };
 
@@ -118,7 +77,7 @@ const AppointmentPage = () => {
   useEffect(() => {
 
     if(selectedDate !== null){
-      const appointmentsOnSelectedDate = appointments?.filter((appointment) => formatDate(selectedDate,0) === formatDate(appointment.date,1))
+      const appointmentsOnSelectedDate = counsellorAppointments?.filter((appointment) => formatDate(selectedDate,0) === formatDate(appointment.date,1))
       console.log(appointmentsOnSelectedDate)
       const availableSlot = availableTimes?.filter(
         (time) =>
@@ -127,11 +86,11 @@ const AppointmentPage = () => {
       setAvailableSlots(availableSlot);
 
     }
-  }, [selectedDate, userAppointments]);
-  // console.log("Available Slots:", availableSlots)
+  }, [selectedDate, counsellorAppointments]);
+  console.log("Counsellor Appointments", counsellorAppointments)
 
   const getAppointments = async () => {
-    dispatch(fetchAllAppointments(token));
+    dispatch(fetchAllCounsellorAppointments(token, user._id));
   };
 
   useEffect(() => {
@@ -149,10 +108,10 @@ const AppointmentPage = () => {
 
   return (
     <>
-      <div className="h-full flex bg-gray-100">
+      <div className=" flex w-full bg-gray-100">
         <div className="w-full p-8 bg-white rounded-md">
           <h2 className="text-3xl font-extrabold text-center text-indigo-800 mb-6">
-            Book an Appointment
+            Your Appointments
           </h2>
           <div className="mb-6 flex flex-col md:flex-row">
             <div className="w-full md:w-1/2 flex">
@@ -163,40 +122,15 @@ const AppointmentPage = () => {
                 selected={selectedDate}
                 onChange={handleDateChange}
                 minDate={new Date()}
-                maxDate={maxDate}
                 filterDate={isWeekday}
                 dateFormat="MMMM d, yyyy"
                 className="w-[200px] h-[51px] p-3 mx-2 border rounded-lg border-2 border-gray-600 shadow-xl focus:outline-none focus:ring focus:border-blue-300 hover:border-blue-200"
                 placeholderText="Select a date"
               />
             </div>
-            <div className="w-full md:w-1/2 flex mt-4 md:mt-0">
-              <label className="block text-2xl mt-2 text-indigo-800 font-semibold text-gray-600 mb-0">
-                Select Time:
-              </label>
-              <select
-                value={selectedTime}
-                onChange={handleTimeChange}
-                placeholder="Select time slot"
-                className="w-[200px] h-[51px] p-3 mx-2 relative px-3 border rounded-lg border-2 border-gray-600 shadow-xl focus:border-blue-300 hover:border-blue-200"
-              >
-                {availableSlots?.map((slot) => (
-                  <option key={slot} value={slot}>
-                    {slot}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <button
-              type="submit"
-              onClick={handleSubmit}
-              className="mt-4 md:mt-0 w-[200px] h-[52px] bg-blue-500 text-white p-1 rounded-md shadow-xl hover:bg-blue-800 focus:outline-none focus:ring focus:border-blue-300"
-            >
-              Book!
-            </button>
           </div>
 
-          {userAppointments?.length > 0 ? (
+          {counsellorAppointments?.length > 0 ? (
             <div className="mt-8">
               <h3 className="text-xl font-bold text-indigo-800 mb-2">
                 Booked Appointments:
@@ -207,17 +141,21 @@ const AppointmentPage = () => {
                     <th className="border p-2">Date</th>
                     <th className="border p-2">Starting Time</th>
                     <th className="border p-2">Ending Time</th>
+                    <th className="border p-2">Person</th>
+                    <th className="border p-2">Contact</th>
                     <th className="border p-2">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {userAppointments
+                  {counsellorAppointments
                   .sort((a, b) => new Date(a.startTime) - new Date(b.startTime)) // Sort appointments by date
                   .map((appointment, index) => (
                     <tr key={index}>
                       <td className="border pl-[50px] py-[5px]">{formatDate(appointment.date, 1)}</td>
                       <td className="border pl-[50px] py-[5px]">{formatTime(appointment.startTime)}</td>
                       <td className="border pl-[50px] py-[5px]">{formatTime(appointment.endTime)}</td>
+                      <td className="border pl-[50px] py-[5px]">{appointment.userId.name} </td>
+                      <td className="border pl-[50px] py-[5px]">{appointment.userId.contact} </td>
                       <td className="border pl-[50px] py-[5px]">
                         <button
                           onClick={() => handleCancel(appointment._id)}
@@ -238,6 +176,6 @@ const AppointmentPage = () => {
       </div>
     </>
   );
-};
+}
 
-export default AppointmentPage;
+export default CounsellorAppointments

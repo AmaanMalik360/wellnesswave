@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import img0 from "../../../assets/images/Green-removebg-preview.png";
-import img3 from "../../../assets/images/me.jpeg";
 import {ReactComponent as LogoutIcon} from "../../../assets/images/logout_button.svg"
 import { Link } from "react-router-dom";
 import { showToast } from "../toasts/Toast";
@@ -21,7 +20,6 @@ const Navbar = () => {
   const signOut = () =>{
     dispatch(signout())
     showToast('Signed out Successfully', "success")
-    // window.location.reload();
   }
   
   const renderUserLinks = () => {  
@@ -38,8 +36,8 @@ const Navbar = () => {
   const renderAdminLinks = () =>{
     return (
       <>
-        <Link to="/users" className="mx-2 my-1.5 px-1.5 py-1 text-white italic bg-indigo-200 font-semibold rounded-lg duration-150 hover:bg-indigo-500 active:bg-indigo-700">Users</Link>  
-    </>
+        {/* <Link to="/dashboard" className="mx-2 my-1.5 px-1.5 py-1 text-white italic bg-indigo-200 font-semibold rounded-lg duration-150 hover:bg-indigo-500 active:bg-indigo-700">Users</Link>   */}
+      </>
     ) 
   }
 

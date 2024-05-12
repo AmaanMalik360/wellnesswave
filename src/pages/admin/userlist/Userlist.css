@@ -1,4 +1,4 @@
-:root {
+/* :root {
     --primary-clr: #ffffff;
     --background-clr: indigo;
     --inputs-clr: indigo;
@@ -8,18 +8,18 @@
 
 .dashboard {
     padding: 2rem 7rem;
-}
+} */
 
 /* Styles for Table */
-.table {
+/* .table {
     width: 100%;
     border-collapse: separate;
     border-spacing: 0 px;
     margin-top: 10px;
-}
+} */
 
 /* Styles for Table Header */
-.th {
+/* .th {
     border: 4px solid var(--background-clr);
     color: var(--primary-clr);
     background-color: var(--inputs-clr);
@@ -34,13 +34,13 @@
 
 .center {
     text-align: center;
-}
+} */
 
 /* Styles for Table Data Cells */
-.td {
+/* .td {
     border: 4px solid var(--background-clr);
     background-color: var(--inputs-clr);
     color: var(--text-clr);
     border-radius: 10px;
     padding: 10px;
-}
+} */

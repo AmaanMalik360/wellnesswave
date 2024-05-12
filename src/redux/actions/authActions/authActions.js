@@ -54,7 +54,7 @@ export const signin = (formData, move) => {
         }
         if(user.role === 'admin')
         {
-          move('userlist')
+          move('dashboard')
         }        
       } 
     } 
