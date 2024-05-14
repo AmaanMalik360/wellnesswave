@@ -1,13 +1,12 @@
-import React, { useEffect, useState } from "react";
-import DatePicker from "react-datepicker";
+import React, { useCallback, useEffect, useState } from "react";
 import "react-datepicker/dist/react-datepicker.css";
-import {deleteAppointment, fetchAllAppointments, fetchAllCounsellorAppointments } from "../../../redux/actions/appointmentActions/appointmentActions";
+import {fetchAllCounsellorAppointments } from "../../../redux/actions/appointmentActions/appointmentActions";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchUsers } from "../../../redux/actions/adminActions/adminActions";
+import { useNavigate } from "react-router-dom";
 
 const CounsellorAppointments = () => {
-
   const dispatch = useDispatch()
+  const move = useNavigate()
   const user = JSON.parse(localStorage.getItem("user")) 
   const token = localStorage.getItem("token") 
 
@@ -37,22 +36,6 @@ const CounsellorAppointments = () => {
     "4:30 PM",
   ];
 
-  // Functions to store date & time
-  const handleDateChange = (date) => {
-    setSelectedDate(date);
-  };
-  const handleCancel = async (id) => {
-    await deleteAppointment(id, token)
-    await getAppointments()
-  };
-
-  // Function to make weekends unavailable to select in datepicker
-  const isWeekday = (date) => {
-    const day = date.getDay();
-    // Return true for weekdays (Monday-Friday)
-    return day > 0 && day < 6;
-  };
-  
   // Functions to format date and times in table
   const formatDate = (dateString, deductDays) => {
     const date = new Date(dateString);
@@ -74,6 +57,17 @@ const CounsellorAppointments = () => {
     }).format(time);
   };
 
+  // Function to adjust date by a specified number of hours
+  const adjustDateByHours = (dateString, hours) =>{
+    // Parse the input date string into a Date object
+    const date = new Date(dateString);
+    
+    // Adjust the date by subtracting the specified number of hours
+    date.setHours(date.getHours() - hours);
+    
+    // Return the adjusted date
+    return date;
+  }
   useEffect(() => {
 
     if(selectedDate !== null){
@@ -106,35 +100,20 @@ const CounsellorAppointments = () => {
     fetchAppointments()
   }, [])
 
+  const handleJoinRoom = useCallback((roomId, counsellorId, userId, appointment) => {
+      move(`/room-page/${roomId}/${counsellorId}/${userId}/${appointment.counsellorId.name}`, { state: {appointment}})
+  },[])  
+
   return (
     <>
       <div className=" flex w-full bg-gray-100">
         <div className="w-full p-8 bg-white rounded-md">
           <h2 className="text-3xl font-extrabold text-center text-indigo-800 mb-6">
-            Your Appointments
+            Your Appointments Today
           </h2>
-          <div className="mb-6 flex flex-col md:flex-row">
-            <div className="w-full md:w-1/2 flex">
-              <label className="block text-2xl mt-2 text-indigo-800 font-semibold text-gray-600 ">
-                Select Date:
-              </label>
-              <DatePicker
-                selected={selectedDate}
-                onChange={handleDateChange}
-                minDate={new Date()}
-                filterDate={isWeekday}
-                dateFormat="MMMM d, yyyy"
-                className="w-[200px] h-[51px] p-3 mx-2 border rounded-lg border-2 border-gray-600 shadow-xl focus:outline-none focus:ring focus:border-blue-300 hover:border-blue-200"
-                placeholderText="Select a date"
-              />
-            </div>
-          </div>
 
           {counsellorAppointments?.length > 0 ? (
             <div className="mt-8">
-              <h3 className="text-xl font-bold text-indigo-800 mb-2">
-                Booked Appointments:
-              </h3>
               <table className="w-full border-collapse border border-gray-800">
                 <thead className="text-white">
                   <tr className="bg-indigo-800">
@@ -157,12 +136,16 @@ const CounsellorAppointments = () => {
                       <td className="border pl-[50px] py-[5px]">{appointment.userId.name} </td>
                       <td className="border pl-[50px] py-[5px]">{appointment.userId.contact} </td>
                       <td className="border pl-[50px] py-[5px]">
-                        <button
-                          onClick={() => handleCancel(appointment._id)}
-                          className="bg-red-500 text-white p-2 rounded-md hover:bg-red-600 focus:outline-none focus:ring focus:border-red-300"
-                        >
-                          Cancel
-                        </button>
+                      {appointment.status === 'Coming' && (
+                        <>
+                          {(adjustDateByHours(appointment.startTime, 5) > new Date()) && (
+                            <button onClick={() => handleJoinRoom(appointment._id, user._id, appointment.userId._id, appointment)} className="bg-gray-300 px-2 py-1">Wait</button>
+                          )}
+                          {(adjustDateByHours(appointment.startTime, 5) <= new Date() && adjustDateByHours(appointment.endTime, 5) >= new Date()) && (
+                            <button onClick={() => handleJoinRoom(appointment._id, user._id, appointment.userId._id, appointment)} className="bg-blue-500 text-white px-2 py-1">Start Meeting</button>
+                          )}
+                        </>
+                      )}
                       </td>
                     </tr>
                   ))}

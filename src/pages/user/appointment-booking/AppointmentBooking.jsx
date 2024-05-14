@@ -83,9 +83,21 @@ const AppointmentPage = () => {
   };
 
   const handleCancel = async (id) => {
-    dispatch(deleteAppointment(id, token, appointments))
+    await dispatch(deleteAppointment(id, token, appointments))
     await getAppointments()
   };
+
+  // Function to adjust date by a specified number of hours
+  const adjustDateByHours = (dateString, hours) =>{
+    // Parse the input date string into a Date object
+    const date = new Date(dateString);
+    
+    // Adjust the date by subtracting the specified number of hours
+    date.setHours(date.getHours() - hours);
+    
+    // Return the adjusted date
+    return date;
+  }
 
   // Function to make weekends unavailable to select in datepicker
   const isWeekday = (date) => {
@@ -219,12 +231,24 @@ const AppointmentPage = () => {
                       <td className="border pl-[50px] py-[5px]">{formatTime(appointment.startTime)}</td>
                       <td className="border pl-[50px] py-[5px]">{formatTime(appointment.endTime)}</td>
                       <td className="border pl-[50px] py-[5px]">
-                        <button
-                          onClick={() => handleCancel(appointment._id)}
-                          className="bg-red-500 text-white p-2 rounded-md hover:bg-red-600 focus:outline-none focus:ring focus:border-red-300"
-                        >
-                          Cancel
-                        </button>
+                        <>
+                          <button
+                            onClick={() => handleCancel(appointment._id)}
+                            className="bg-red-500 text-white p-2 rounded-md hover:bg-red-600 focus:outline-none focus:ring focus:border-red-300"
+                          >
+                            Cancel
+                          </button>
+                          {appointment.status === 'Coming' && (
+                            <>
+                              {(adjustDateByHours(appointment.startTime, 5) > new Date()) && (
+                                <button className="ml-[20px] bg-gray-300 px-2 py-1">Wait</button>
+                              )}
+                              {(adjustDateByHours(appointment.startTime, 5) <= new Date() && adjustDateByHours(appointment.endTime, 5) >= new Date()) && (
+                                <button className="ml-[20px] bg-blue-500 text-white px-2 py-1">Meeting will start anytime now.</button>
+                              )}
+                            </>
+                          )}
+                        </>                        
                       </td>
                     </tr>
                   ))}

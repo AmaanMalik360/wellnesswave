@@ -16,6 +16,7 @@ import Dashboard from "./pages/admin/dashboard/Dashboard";
 import UserDetails from "./pages/admin/user-details/UserDetails";
 import CounsellorAppointments from "./pages/counsellor/counsellor-appointments/CounsellorAppointments";
 import CounsellorPermission from "./routes/CounsellorPermission";
+import RoomPage from "./pages/room/RoomPage";
 
 function App() {
   return (
@@ -27,17 +28,18 @@ function App() {
         <Route path="/" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
 
+        <Route path='/room-page/:roomId/:counsellorId/:userId/:name' element={<RoomPage/>}/>
         <Route element={<PrivateRoute/>}>
           <Route path="/home" element={<Home />} />
           <Route path="/appointment-booking" element={<AppointmentBooking />} />
           <Route path="/indicators" element={<Indicators />} />
-          <Route path="/ChatBox" element={<ChatsPage /> }/>
+          {/* <Route path="/ChatBox" element={<ChatsPage /> }/> */}
 
           <Route element={<CounsellorPermission perProp={['counsellor']} />}>
             <Route path="/counsellor-home" element={<CounsellorHome/>} />
             <Route path='/counsellor-appointments' element={<CounsellorAppointments/>}/>
           </Route>
-
+            
           <Route element={<Permissions perProp={['admin']} />}>
             <Route path='/dashboard' element={<Dashboard/>}/>
             <Route path='/user-details' element={<UserDetails/>}/>

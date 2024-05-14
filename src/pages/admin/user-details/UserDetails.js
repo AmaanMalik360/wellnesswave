@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { FaArrowAltCircleLeft } from "react-icons/fa";
-import { fetchUserAppointments } from "../../../redux/actions/appointmentActions/appointmentActions";
+import { fetchAllCounsellorAppointmentsForAdmin, fetchUserAppointments } from "../../../redux/actions/appointmentActions/appointmentActions";
 import { useDispatch, useSelector } from "react-redux";
 import { assignCounsellorToUser, changePermission, fetchCounsellors, fetchOneUser } from "../../../redux/actions/adminActions/adminActions";
 import { showToast } from "../../../components/common/toasts/Toast";
@@ -19,7 +19,7 @@ const UserDetails = () => {
   const { user } = location.state;
   const [userData, setUserData] = useState(user)
   const [userAppointments, setUserAppointments] = useState()
-  
+  const [counsellorAppointments, setCounsellorAppointments] = useState()
 
   const moveBack = () => {
     move(-1);
@@ -61,6 +61,12 @@ const UserDetails = () => {
         setUserAppointments(result.userAppointments)
   };
   
+  const getCounsellorAppointments = async () => {
+    const result = await fetchAllCounsellorAppointmentsForAdmin(token, user._id);
+    if(result.success)    
+      setCounsellorAppointments(result.counsellorAppointments)
+  };
+  
   const getCounsellors = async () => {
     await fetchCounsellors(token);
   };
@@ -82,6 +88,15 @@ const UserDetails = () => {
         console.error("Error Fetching Appointments:", error);
       }
     };
+    const fetchCounsellorAppointments = async () => {
+      try {
+        if (admin && token) {
+          await getCounsellorAppointments();
+        }
+      } catch (error) {
+        console.error("Error Fetching Appointments:", error);
+      }
+    };
     const fetchCounsellors = async () => {
       try {
         if (admin && token) {
@@ -93,6 +108,7 @@ const UserDetails = () => {
     };
 
     fetchAppointments();
+    fetchCounsellorAppointments()
     fetchCounsellors();
   }, []);
     
@@ -287,7 +303,7 @@ const UserDetails = () => {
               )}
             </tbody>
           </table>
-          {userAppointments?.length > 0 ? (
+          {user.role !== 'counsellor' && userAppointments?.length > 0 ? (
             <div className="mt-8">
               <h3 className="text-xl font-bold text-indigo-800 mb-2">
                 Booked Appointments:
@@ -316,7 +332,40 @@ const UserDetails = () => {
               </table>
             </div>
           ) : (
-            <p className="mt-8 text-gray-600">No appointments booked yet.</p>
+            user.role !== "counsellor" && (
+              <p className="mt-8 text-gray-600">No appointments booked yet.</p>)
+          )}
+          {user.role === 'counsellor' && counsellorAppointments?.length > 0 ? (
+            <div className="mt-8">
+              <h3 className="text-xl font-bold text-indigo-800 mb-2">
+                Booked Appointments:
+              </h3>
+              <table className="w-full border-collapse border border-gray-800">
+                <thead className="text-white">
+                  <tr className="bg-indigo-800">
+                    <th className="border p-2">Date</th>
+                    <th className="border p-2">Starting Time</th>
+                    <th className="border p-2">Ending Time</th>
+                    <th className="border p-2">Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {counsellorAppointments
+                  .sort((a, b) => new Date(a.startTime) - new Date(b.startTime)) // Sort appointments by date
+                  .map((appointment, index) => (
+                    <tr key={index}>
+                      <td className="border pl-[50px] py-[5px]">{formatDate(appointment.date, 1)}</td>
+                      <td className="border pl-[50px] py-[5px]">{formatTime(appointment.startTime)}</td>
+                      <td className="border pl-[50px] py-[5px]">{formatTime(appointment.endTime)}</td>
+                      <td className="border pl-[50px] py-[5px]">{appointment.status}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            user.role === "counsellor" && (
+              <p className="mt-8 text-gray-600">No appointments booked yet.</p>)
           )}
         </div>
       </div>
