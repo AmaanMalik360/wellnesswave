@@ -10,7 +10,10 @@ export const signup = async (formData, move) => {
     console.log("Response", response);
     if (response.data.success) {
       showToast(response.data.message, "success");
-      move("/");
+      if(formData.role !== "counsellor")
+      {
+        move("/");
+      }
     } else {
       showToast(response.data.message, "error");
     }

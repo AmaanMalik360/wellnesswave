@@ -3,6 +3,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { createAppointment, deleteAppointment, fetchAllAppointments } from "../../../redux/actions/appointmentActions/appointmentActions";
 import { useDispatch, useSelector } from "react-redux";
+import { showToast } from "../../../components/common/toasts/Toast";
 
 const AppointmentPage = () => {
 
@@ -14,7 +15,6 @@ const AppointmentPage = () => {
   const appointments = useSelector(state => state?.appointments?.appointments)
   const userAppointments = useSelector(state => state?.appointments?.userAppointments)
 
-  console.log("User Appointments", userAppointments);
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedTime, setSelectedTime] = useState("");
   const [availableSlots, setAvailableSlots] = useState([])
@@ -65,6 +65,16 @@ const AppointmentPage = () => {
       const startTime = new Date(`${formattedDate} ${selectedTime}`);
       const endTime = new Date(startTime.getTime() + 29 * 62060); // Adding 29 minutes (29 * 60000 milliseconds) to startTime
 
+      const currentDate = new Date(); // Get the current date and time
+
+      console.log(new Date());
+      console.log(startTime);
+      console.log(endTime);
+
+      if (currentDate > startTime) {
+          showToast("Time has passed can't book now.","error");
+          return;
+      }
       const newAppointment = {
         userId: user._id,
         date: formattedDate,
@@ -131,16 +141,13 @@ const AppointmentPage = () => {
 
     if(selectedDate !== null){
       const appointmentsOnSelectedDate = appointments?.filter((appointment) => formatDate(selectedDate,0) === formatDate(appointment.date,1))
-      console.log(appointmentsOnSelectedDate)
       const availableSlot = availableTimes?.filter(
         (time) =>
           !appointmentsOnSelectedDate?.some((appointment) => (formatTime(appointment.startTime) === time))
       );
       setAvailableSlots(availableSlot);
-
     }
   }, [selectedDate, userAppointments]);
-  // console.log("Available Slots:", availableSlots)
 
   const getAppointments = async () => {
     dispatch(fetchAllAppointments(token));
@@ -244,7 +251,7 @@ const AppointmentPage = () => {
                                 <button className="ml-[20px] bg-gray-300 px-2 py-1">Wait</button>
                               )}
                               {(adjustDateByHours(appointment.startTime, 5) <= new Date() && adjustDateByHours(appointment.endTime, 5) >= new Date()) && (
-                                <button className="ml-[20px] bg-blue-500 text-white px-2 py-1">Meeting will start anytime now.</button>
+                                <button className="ml-[20px] bg-blue-500 text-white px-2 py-1">Wait for meeting link.</button>
                               )}
                             </>
                           )}

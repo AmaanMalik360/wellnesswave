@@ -21,6 +21,7 @@ const UserDetails = () => {
   const [userAppointments, setUserAppointments] = useState()
   const [counsellorAppointments, setCounsellorAppointments] = useState()
 
+  console.log("Counsellor Appointments:",counsellorAppointments)
   const moveBack = () => {
     move(-1);
   };
@@ -147,7 +148,6 @@ const UserDetails = () => {
   
   const handleAssignCounsellor = async (counsellorId) => {
     const assignedCounsellorId = counsellorId
-    console.log(assignedCounsellorId)
     // Logic to assign the selected counsellor to the user
     dispatch(assignCounsellorToUser(token, admin._id, userData._id, assignedCounsellorId, users));
     await getUser(); // Refresh user data after assignment
@@ -315,6 +315,8 @@ const UserDetails = () => {
                     <th className="border p-2">Starting Time</th>
                     <th className="border p-2">Ending Time</th>
                     <th className="border p-2">Status</th>
+                    <th className="border p-2">Attendance</th>
+
                   </tr>
                 </thead>
                 <tbody>
@@ -326,6 +328,7 @@ const UserDetails = () => {
                       <td className="border pl-[50px] py-[5px]">{formatTime(appointment.startTime)}</td>
                       <td className="border pl-[50px] py-[5px]">{formatTime(appointment.endTime)}</td>
                       <td className="border pl-[50px] py-[5px]">{appointment.status}</td>
+                      <td className="border pl-[50px] py-[5px]">{appointment.attendance}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -343,10 +346,12 @@ const UserDetails = () => {
               <table className="w-full border-collapse border border-gray-800">
                 <thead className="text-white">
                   <tr className="bg-indigo-800">
+                    <th className="border p-2">Name</th>
                     <th className="border p-2">Date</th>
                     <th className="border p-2">Starting Time</th>
                     <th className="border p-2">Ending Time</th>
                     <th className="border p-2">Status</th>
+                    <th className="border p-2">Attendance</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -354,10 +359,12 @@ const UserDetails = () => {
                   .sort((a, b) => new Date(a.startTime) - new Date(b.startTime)) // Sort appointments by date
                   .map((appointment, index) => (
                     <tr key={index}>
+                      <td className="border pl-[50px] py-[5px]">{appointment.userId.name}</td>
                       <td className="border pl-[50px] py-[5px]">{formatDate(appointment.date, 1)}</td>
                       <td className="border pl-[50px] py-[5px]">{formatTime(appointment.startTime)}</td>
                       <td className="border pl-[50px] py-[5px]">{formatTime(appointment.endTime)}</td>
                       <td className="border pl-[50px] py-[5px]">{appointment.status}</td>
+                      <td className="border pl-[50px] py-[5px]">{appointment.attendance}</td>
                     </tr>
                   ))}
                 </tbody>

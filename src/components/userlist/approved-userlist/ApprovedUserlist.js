@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import AddCounsellorModal from "../../admin/modal/AddCounsellorModal";
 
 const ApprovedUserlist = ({
   selectedType,
@@ -8,6 +9,13 @@ const ApprovedUserlist = ({
 }) => {
   const move = useNavigate();
   const [selectedSubType, setSelectedSubType] = useState("Students");
+
+  // Modal states and functions
+  const [showModal, setShowModal] = useState(false)
+  const closeModal = () => setShowModal(false)
+  const openModal = () => {
+    setShowModal(true)
+  }
 
   const subs = [
     { type: "Students", users: approvedUsers.filter(user => user.role === "student") },
@@ -74,6 +82,14 @@ const ApprovedUserlist = ({
             ))}
         </div>
       </div>
+      {selectedSubType === "Counsellors" && (
+        <button className="fixed bottom-4 right-4 bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded-full shadow-lg" onClick={openModal}>
+          Add Counsellor
+        </button>
+        )
+      }
+
+      <AddCounsellorModal show={showModal} handleClose={closeModal}/>
     </>
   );
 };

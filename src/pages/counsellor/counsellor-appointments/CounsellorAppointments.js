@@ -103,6 +103,10 @@ const CounsellorAppointments = () => {
   const handleJoinRoom = useCallback((roomId, counsellorId, userId, appointment) => {
       move(`/room-page/${roomId}/${counsellorId}/${userId}/${appointment.counsellorId.name}`, { state: {appointment}})
   },[])  
+  
+  const handleJoinLounge = (roomId) => {
+      move(`/meeting-lounge/${roomId}`)
+  } 
 
   return (
     <>
@@ -139,10 +143,10 @@ const CounsellorAppointments = () => {
                       {appointment.status === 'Coming' && (
                         <>
                           {(adjustDateByHours(appointment.startTime, 5) > new Date()) && (
-                            <button onClick={() => handleJoinRoom(appointment._id, user._id, appointment.userId._id, appointment)} className="bg-gray-300 px-2 py-1">Wait</button>
+                            <button onClick={() => handleJoinLounge(appointment._id, user._id, appointment.userId._id, appointment)} className="bg-gray-300 px-2 py-1">Wait</button>
                           )}
                           {(adjustDateByHours(appointment.startTime, 5) <= new Date() && adjustDateByHours(appointment.endTime, 5) >= new Date()) && (
-                            <button onClick={() => handleJoinRoom(appointment._id, user._id, appointment.userId._id, appointment)} className="bg-blue-500 text-white px-2 py-1">Start Meeting</button>
+                            <button onClick={() => handleJoinLounge(appointment._id)} className="bg-blue-500 text-white px-2 py-1">Go To Meeting Lounge</button>
                           )}
                         </>
                       )}

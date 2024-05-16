@@ -103,7 +103,7 @@ export const fetchAllCounsellorAppointments = (token, counsellorId) => {
         const { counsellorAppointments } = response.data;
         dispatch({
           type: "COUNSELLOR_APPOINTMENTS_SUCCESS",
-          payload: { counsellorAppointments, counsellorAppointments },
+          payload: { counsellorAppointments },
         });
       } else {
         dispatch({
@@ -232,3 +232,70 @@ export const fetchAllCounsellorAppointmentsForAdmin = async (token, userId) => {
     return {success: false}
   }
 };
+
+export const fetchAppointment = async (token, appointmentId) => {
+  try {
+    const response = await axios.get(`${serverUrl}/appointments/${appointmentId}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    console.log(response.data)
+    if (response.status === 200) {
+      const { appointment } = response.data;
+      return {success: true, appointment}
+    } else {
+      return {success: false}
+    }
+  } catch (error) {
+    console.error("Error fetching user:", error);
+    return {success: false}
+  }
+};
+
+export const updateAppointmentStatus = (token, appointmentId, counsellorAppointments, attendance ) => {
+  return async (dispatch) => {
+    try {
+        dispatch({ type: "COUNSELLOR_APPOINTMENTS_REQUEST" });
+  
+         // Conditionally construct the query string
+      const queryString = attendance ? `?attendance=${attendance}` : "";
+
+      const response = await axios.patch(`${serverUrl}/appointments/status/${appointmentId}${queryString}`, null, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      console.log("Counsellor Appointment:", response.data.appointment);
+
+      if (response.status === 200) {
+        const { appointment } = response.data;
+        
+        // Find the appointment in the appointments array by appointmentId
+        let index = counsellorAppointments.findIndex((obj) => obj._id === appointmentId);
+
+        // If the appointment is found, update its status and attendance if present
+        if (index !== -1) {
+          counsellorAppointments[index].status = appointment.status;
+          if (attendance) {
+            counsellorAppointments[index].attendance = appointment.attendance;
+          }
+        }
+
+          dispatch({
+            type: "COUNSELLOR_APPOINTMENTS_SUCCESS",
+            payload: { counsellorAppointments, counsellorAppointments },
+          });
+        } 
+        else {
+          dispatch({
+            type: "COUNSELLOR_APPOINTMENTS_FAILURE",
+            payload: { error: response.data.message },
+          });
+        }
+      } catch (error) {
+        console.error("Error Changing Appointment Status to Ongoing:", error);
+        dispatch({
+          type: "COUNSELLOR_APPOINTMENTS_FAILURE",
+          payload: { error: "Error Changing Appointment Status to Ongoing:" },
+        });
+      }
+  };
+}

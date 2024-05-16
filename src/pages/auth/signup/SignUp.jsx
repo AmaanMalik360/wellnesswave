@@ -141,12 +141,12 @@ const SignUp = () => {
                 >
                   Staff
                 </NavLink>
-                <NavLink
+                {/* <NavLink
                   onClick={() => handleOptionChange("counsellor")}
                   className="mx-1 px-4 py-1 text-white duration-150 rounded-full bg-indigo-500 active:bg-indigo-700 text-md"
                 >
                   Counsellor
-                </NavLink>
+                </NavLink> */}
               </div>
               <p className="text-md">
                 Already have an account? 
