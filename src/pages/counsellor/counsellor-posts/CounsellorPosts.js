@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
-import { createAPost, fetchAllPosts } from '../../../redux/actions/postActions/postActions';
+import { createAPost, fetchAllPosts, fetchAllPostsOfCounsellor } from '../../../redux/actions/postActions/postActions';
 import SurveyPosts from '../../../components/counsellor/counsellor-posts/survey-posts/SurveyPosts';
 import ExercisePosts from '../../../components/counsellor/counsellor-posts/exercise-posts/ExercisePosts';
 import AddPostModal from '../../../components/counsellor/modals/AddPostModal';
@@ -30,7 +30,7 @@ const CounsellorPosts = () => {
   }
 
   const getPosts = async () => {
-    await dispatch(fetchAllPosts(token));
+    await dispatch(fetchAllPostsOfCounsellor(token, user._id));
   };
 
   useEffect(() => {

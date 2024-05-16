@@ -26,7 +26,8 @@ const UserDetails = () => {
     move(-1);
   };
   const handlePermissionChange = async (userId) => {
-    if(!userData.counsellorId) {
+
+    if(!userData.counsellorId && userData.role !== 'counsellor') {
       showToast("First assign counsellor to user","error")
       return;
     }

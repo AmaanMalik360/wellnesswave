@@ -1,4 +1,4 @@
-const deployStatus = "dev"
+const deployStatus = "local"
 const localUrl =  "http://localhost:3002"
 const deployedUrl = "https://wellnesswave-backend.onrender.com"
 export const serverUrl = deployStatus === "local"?  localUrl: deployedUrl;

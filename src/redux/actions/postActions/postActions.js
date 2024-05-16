@@ -32,6 +32,36 @@ export const fetchAllPosts = (token) =>{
       }
     };
 }
+export const fetchAllPostsOfCounsellor = (token, counsellorId) =>{    
+    return async (dispatch) => {
+      try {
+        dispatch({ type: "POSTS_REQUEST" });
+
+        const response = await axios.get(`${serverUrl}/posts/counsellor/${counsellorId}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        // console.log("All Post",response.data.posts);
+
+        if (response.status === 200) {
+          const { posts } = response.data;
+          dispatch({ type: "POSTS_SUCCESS", payload: posts });
+        } 
+        else {
+          dispatch({
+            type: "POSTS_FAILURE",
+            payload: { error: response.data.message },
+          });
+        }
+      } 
+      catch (error) {
+        console.error("Error fetching Posts:", error);
+        dispatch({
+            type: "POSTS_FAILURE",
+            payload: { error: "Error fetching Posts:" },
+        });
+      }
+    };
+}
 
 export const createAPost = (data, posts,token) =>{    
     return async (dispatch) => {
