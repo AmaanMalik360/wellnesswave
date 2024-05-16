@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Modal, Button, Form, Input, Select } from 'antd';
+import { Modal, Button, Form, Input } from 'antd';
 import { signup } from '../../../redux/actions/authActions/authActions';
 
 const AddCounsellorModal = ({ show, handleClose }) => {

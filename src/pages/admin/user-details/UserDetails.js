@@ -111,7 +111,7 @@ const UserDetails = () => {
     fetchAppointments();
     fetchCounsellorAppointments()
     fetchCounsellors();
-  }, []);
+  }, [admin ]);
     
   const CounsellorAssignment = () => {
     const assignedCounsellor = userData.counsellorId

@@ -281,7 +281,7 @@ export const updateAppointmentStatus = (token, appointmentId, counsellorAppointm
 
           dispatch({
             type: "COUNSELLOR_APPOINTMENTS_SUCCESS",
-            payload: { counsellorAppointments, counsellorAppointments },
+            payload: { counsellorAppointments },
           });
         } 
         else {

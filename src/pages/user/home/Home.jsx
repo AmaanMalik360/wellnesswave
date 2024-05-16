@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { fetchAllPosts } from "../../../redux/actions/postActions/postActions";
 import { useDispatch, useSelector } from "react-redux";
 

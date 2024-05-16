@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, NavLink, Route, Routes, useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
 import img2 from "../../../assets/images/Green-removebg-preview.png";
 import { signup } from "../../../redux/actions/authActions/authActions";
@@ -10,8 +10,6 @@ import StaffSignup from "../../../components/signup/staff/StaffSignup";
 import CounsellorSignup from "../../../components/signup/counsellor/CounsellorSignup";
 
 const SignUp = () => {
-  
-  const dispatch = useDispatch()
   const move = useNavigate();
   // State to track which form to display
   const [selectedOption, setSelectedOption] = useState("student");

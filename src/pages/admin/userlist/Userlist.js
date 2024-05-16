@@ -10,7 +10,6 @@ import ApprovedUserlist from "../../../components/userlist/approved-userlist/App
 
 const Userlist = () => {
   const dispatch = useDispatch();
-  const move = useNavigate();
   const admin = JSON.parse(localStorage.getItem("user"));
   const token = localStorage.getItem("token");
 
